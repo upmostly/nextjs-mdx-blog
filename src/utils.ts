@@ -1,6 +1,14 @@
 import path from 'path';
-import * as fs from 'fs';
+
 import glob from 'tiny-glob';
+import matter from 'gray-matter';
+import fs from 'fs/promises';
+
+export type BlogPostFrontmatter = {
+    title: string;
+    description: string;
+    publishedAt: string;
+};
 
 export function pascalToKebabCase(pascalString: string): string {
     return pascalString
@@ -27,8 +35,6 @@ export function findAllPostSlugs() {
     return glob(path.join(BLOG_PATH, '*.mdx')).then((paths) =>
         paths.map(getSlug)
     );
-
-    // Only include md(x) files
 }
 
 function getSlug(slugPath: string) {
@@ -40,6 +46,11 @@ export function getPath(slug: string) {
     return path.join(BLOG_PATH, slug + '.mdx');
 }
 
+export async function loadMdxFromSlug(slug: string) {
+    const path = getPath(slug);
+    const source = await fs.readFile(path);
+    return matter(source);
+}
 /*export function findAllSketchDescriptionFullPaths() {
     return fs
         .readdirSync(SKETCH_PATH)

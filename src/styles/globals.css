@@ -9,3 +9,8 @@
     }
 }
 
+@layer components {
+    .card {
+        @apply rounded border border-stone-700 shadow dark:bg-stone-800 !important
+    }
+}
