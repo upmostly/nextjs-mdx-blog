@@ -16,17 +16,28 @@ export function kebabToPascalCase(kebabString: string): string {
         .join('');
 }
 
-export const BLOGS_PATH = path.join(process.cwd(), '/posts/');
+export const BLOG_PATH = path.join(process.cwd(), '/posts/');
 
 export type BlogPostDescription = {
     slug: string;
     title: string;
 };
 
-export function findAllSketchFolderNames() {
-    return glob(path.join(BLOGS_PATH, '*.mdx'));
+export function findAllPostSlugs() {
+    return glob(path.join(BLOG_PATH, '*.mdx')).then((paths) =>
+        paths.map(getSlug)
+    );
 
     // Only include md(x) files
+}
+
+function getSlug(slugPath: string) {
+    const [slug] = /.+(?=.mdx)/i.exec(path.basename(slugPath)) as string[];
+    return slug;
+}
+
+export function getPath(slug: string) {
+    return path.join(BLOG_PATH, slug + '.mdx');
 }
 
 /*export function findAllSketchDescriptionFullPaths() {
